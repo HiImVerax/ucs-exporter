@@ -14,9 +14,13 @@ LDFLAGS  := -s -w \
 	-X github.com/prometheus/common/version.BuildUser=$(USER) \
 	-X github.com/prometheus/common/version.BuildDate=$(shell date -u +%Y%m%d-%H:%M:%S)
 
-.PHONY: all build test vet fmt golden docs dashboard docker run-fake clean
+.PHONY: all build test vet fmt golden docs dashboard docker run-fake clean vendor
 
 all: vet test build
+
+vendor:
+	go mod tidy
+	go mod vendor
 
 build:
 	CGO_ENABLED=0 go build -trimpath -ldflags '$(LDFLAGS)' -o bin/ucs-exporter ./cmd/ucs-exporter
